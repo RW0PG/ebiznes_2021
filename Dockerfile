@@ -4,7 +4,7 @@ ENV TZ=Europe/Warsaw
 
 RUN apt-get update && apt-get upgrade -y
 
-RUN apt-get install -y vim gnupg2 git wget unzip curl
+RUN apt-get install -y vim gnupg2 sudo git wget unzip curl
 
 #java 8
 
@@ -31,8 +31,15 @@ RUN apt-get install -y nodejs
 
 EXPOSE 3000
 
-RUN mkdir -p /usr/src/app
+# user 
 
-WORKDIR /usr/src/app
+RUN useradd -ms /bin/bash rw0pg
+RUN adduser rw0pg sudo
 
-VOLUME /usr/src/app
+# workdir 
+
+USER rw0pg
+RUN mkdir /home/rw0pg/ebiznes2021
+WORKDIR /home/rw0pg
+VOLUME /home/rw0pg/ebiznes2021
+

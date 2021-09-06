@@ -23,21 +23,21 @@ class UserDataController @Inject()(cc: ControllerComponents, actorSystem: ActorS
 
   def createUserData(): Action[AnyContent] = Action.async { implicit request =>
     println("createUserData, user data are here: ", request.body)
-    mockupMethodForEx2(30.millisecond, request.body.asJson.get("name").as[String]).map { msg => Ok(Json.toJson(msg)) }
+    mockupMethodForEx2(30.millisecond, request.body.asJson.get("name").as[String]).map { returned_value => Ok(Json.toJson(returned_value)) }
   }
 
   def getUserData(id: String): Action[AnyContent] = Action.async {
     println("getUserData, getting user data by id: ", id)
-    mockupMethodForEx2(30.millisecond).map {msg => Ok(Json.toJson(msg))}
+    mockupMethodForEx2(30.millisecond).map {returned_value => Ok(Json.toJson(returned_value))}
   }
 
   def updateUserData(): Action[AnyContent] = Action.async { implicit request =>
     println("updateUserData, updating user data:", request.body)
-    mockupMethodForEx2(30.millisecond, request.body.asJson.get("name").as[String]).map { msg => Ok(Json.toJson(msg)) }
+    mockupMethodForEx2(30.millisecond, request.body.asJson.get("name").as[String]).map { returned_value => Ok(Json.toJson(returned_value)) }
   }
 
   def deleteUserData(id: String): Action[AnyContent] = Action.async {
     println("deleteUser, deleting user data with id:", id)
-    mockupMethodForEx2(30.millisecond).map { msg => Ok(Json.toJson(msg)) }
+    mockupMethodForEx2(30.millisecond).map { returned_value => Ok(Json.toJson(returned_value)) }
   }
 }

@@ -24,3 +24,9 @@ POST /user-data/create                   controllers.api.UserController.createUs
 GET /user-data/get/:id                   controllers.api.UserController.getUser(id)
 PUT /user-data/update                    controllers.api.UserController.updateUser
 DELETE /user-data/delete/:id             controllers.api.UserController.deleteUser(id)
+
+# Order
+POST /order/create                   controllers.api.UserController.createUser
+GET /order/get/:id                   controllers.api.UserController.getUser(id)
+PUT /order/update                    controllers.api.UserController.updateUser
+DELETE /order/delete/:id             controllers.api.UserController.deleteUser(id)

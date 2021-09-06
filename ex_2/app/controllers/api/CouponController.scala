@@ -10,7 +10,7 @@ import scala.concurrent.duration._
 import scala.concurrent.{ExecutionContext, Future, Promise}
 
 @Singleton
-class ProductSubcategoryController @Inject()(cc: ControllerComponents, actorSystem: ActorSystem)(implicit exec: ExecutionContext) extends AbstractController(cc) {
+class CouponController @Inject()(cc: ControllerComponents, actorSystem: ActorSystem)(implicit exec: ExecutionContext) extends AbstractController(cc) {
 
   def mockupMethodForEx2(delayTime: FiniteDuration, name: String = "mockup_name"): Future[MockupMethod] = {
     val mockup = MockupMethod("mockup_ID", name)
@@ -21,23 +21,23 @@ class ProductSubcategoryController @Inject()(cc: ControllerComponents, actorSyst
     promise.future
   }
 
-  def createProductSubcategory(): Action[AnyContent] = Action.async { implicit request =>
-    println("createProductSubcategory, ProductSubcategory: ", request.body)
+  def createCoupon(): Action[AnyContent] = Action.async { implicit request =>
+    println("createCoupon, coupon: ", request.body)
     mockupMethodForEx2(30.millisecond, request.body.asJson.get("name").as[String]).map { returned_value => Ok(Json.toJson(returned_value)) }
   }
 
-  def getProductSubcategory(id: String): Action[AnyContent] = Action.async {
-    println("getProductSubcategory, getting ProductSubcategory by id: ", id)
+  def getCoupon(id: String): Action[AnyContent] = Action.async {
+    println("getCoupon, getting coupon by id: ", id)
     mockupMethodForEx2(30.millisecond).map {returned_value => Ok(Json.toJson(returned_value))}
   }
 
-  def updateProductSubcategory(): Action[AnyContent] = Action.async { implicit request =>
-    println("updateProductSubcategory, updating ProductSubcategory", request.body)
+  def updateCoupon(): Action[AnyContent] = Action.async { implicit request =>
+    println("updateCoupon, updating coupon", request.body)
     mockupMethodForEx2(30.millisecond, request.body.asJson.get("name").as[String]).map { returned_value => Ok(Json.toJson(returned_value)) }
   }
 
-  def deleteProductSubcategory(id: String): Action[AnyContent] = Action.async {
-    println("deleteProductSubcategory, deleting ProductSubcategory with id:", id)
+  def deleteCoupon(id: String): Action[AnyContent] = Action.async {
+    println("deleteCoupon, deleting coupon with id:", id)
     mockupMethodForEx2(30.millisecond).map { returned_value => Ok(Json.toJson(returned_value)) }
   }
 }

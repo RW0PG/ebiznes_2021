@@ -26,7 +26,7 @@ class BasketController @Inject()(cc: ControllerComponents, actorSystem: ActorSys
     mockupMethodForEx2(30.millisecond, request.body.asJson.get("name").as[String]).map { returned_value => Ok(Json.toJson(returned_value)) }
   }
 
-  def getBasket(id: Long): Action[AnyContent] = Action.async {
+  def getBasket(id: String): Action[AnyContent] = Action.async {
     println("getBasket, getting basket by id: ", id)
     mockupMethodForEx2(30.millisecond).map {returned_value => Ok(Json.toJson(returned_value))}
   }
@@ -36,7 +36,7 @@ class BasketController @Inject()(cc: ControllerComponents, actorSystem: ActorSys
     mockupMethodForEx2(30.millisecond, request.body.asJson.get("name").as[String]).map { returned_value => Ok(Json.toJson(returned_value)) }
   }
 
-  def deleteBasket(id: Long): Action[AnyContent] = Action.async {
+  def deleteBasket(id: String): Action[AnyContent] = Action.async {
     println("deleteBasket, deleting basket with id:", id)
     mockupMethodForEx2(30.millisecond).map { returned_value => Ok(Json.toJson(returned_value)) }
   }

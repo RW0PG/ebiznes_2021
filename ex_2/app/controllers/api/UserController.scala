@@ -25,7 +25,7 @@ class UserController @Inject()(cc: ControllerComponents, actorSystem: ActorSyste
     println("createUser, creating user:", request.body)
     mockupMethodForEx2(30.millisecond, request.body.asJson.get("name").as[String]).map { returned_value => Ok(Json.toJson(returned_value)) }
   }
-  def getUser(id: Long): Action[AnyContent] = Action.async {
+  def getUser(id: String): Action[AnyContent] = Action.async {
     println("getUser, getting user by its id:", id)
     mockupMethodForEx2(30.millisecond).map { returned_value => Ok(Json.toJson(returned_value)) }
   }

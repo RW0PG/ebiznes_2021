@@ -1,5 +1,6 @@
 package models
 
+import java.sql.Date
 import play.api.libs.json.{Json, OFormat}
 import sun.security.util.Password
 

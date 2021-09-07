@@ -14,68 +14,71 @@ GET     /message                    controllers.AsyncController.message
 GET     /assets/*file               controllers.Assets.versioned(path="/public", file: Asset)
 
 # User
-POST /user/create                   controllers.api.UserController.createUser
-GET /user/get/:id                   controllers.api.UserController.getUser(id)
-PUT /user/update                    controllers.api.UserController.updateUser
-DELETE /user/delete/:id             controllers.api.UserController.deleteUser(id)
+GET     /form/user/create                                    controllers.view.UserController.createUser()
+POST    /form/user/create/handle                             controllers.view.UserController.createUserHandle()
+GET     /form/user/list                                      controllers.view.UserController.getUsers
+GET     /form/user/update/:id                                controllers.view.UserController.updateUser(id: Long)
+POST    /form/user/update/handle                             controllers.view.UserController.updateUserHandle
+GET     /form/user/delete/:id                                controllers.view.UserController.deleteUser(id: Long)
 
-# UserData
-POST /user-data/create                   controllers.api.UserController.createUser
-GET /user-data/get/:id                   controllers.api.UserController.getUser(id)
-PUT /user-data/update                    controllers.api.UserController.updateUser
-DELETE /user-data/delete/:id             controllers.api.UserController.deleteUser(id)
-
-# Order
-POST /order/create                   controllers.api.UserController.createUser
-GET /order/get/:id                   controllers.api.UserController.getUser(id)
-PUT /order/update                    controllers.api.UserController.updateUser
-DELETE /order/delete/:id             controllers.api.UserController.deleteUser(id)
-
-
-# Product
-POST /product/create                   controllers.api.UserController.createUser
-GET /product/get/:id                   controllers.api.UserController.getUser(id)
-PUT /product/update                    controllers.api.UserController.updateUser
-DELETE /product/delete/:id             controllers.api.UserController.deleteUser(id)
-
-# Product in stock
-POST /product-stock/create                   controllers.api.UserController.createUser
-GET /product-stock/get/:id                   controllers.api.UserController.getUser(id)
-PUT /product-stock/update                    controllers.api.UserController.updateUser
-DELETE /product-stock/delete/:id             controllers.api.UserController.deleteUser(id)
-
-# Product category
-POST /product-category/create                   controllers.api.UserController.createUser
-GET /product-category/get/:id                   controllers.api.UserController.getUser(id)
-PUT /product-category/update                    controllers.api.UserController.updateUser
-DELETE /product-category/delete/:id             controllers.api.UserController.deleteUser(id)
-
-# Product subcategory
-POST /product-subcategory/create                   controllers.api.UserController.createUser
-GET /product-subcategory/get/:id                   controllers.api.UserController.getUser(id)
-PUT /product-subcategory/update                    controllers.api.UserController.updateUser
-DELETE /product-subcategory/delete/:id             controllers.api.UserController.deleteUser(id)
-
-# Product description
-POST /product-description/create                   controllers.api.UserController.createUser
-GET /product-description/get/:id                   controllers.api.UserController.getUser(id)
-PUT /product-description/update                    controllers.api.UserController.updateUser
-DELETE /product-description/delete/:id             controllers.api.UserController.deleteUser(id)
-
-# Payment
-POST /payment/create                   controllers.api.UserController.createUser
-GET /payment/get/:id                   controllers.api.UserController.getUser(id)
-PUT /payment/update                    controllers.api.UserController.updateUser
-DELETE /payment/delete/:id             controllers.api.UserController.deleteUser(id)
-
-# Coupons
-POST /coupons/create                   controllers.api.UserController.createUser
-GET /coupons/get/:id                   controllers.api.UserController.getUser(id)
-PUT /coupons/update                    controllers.api.UserController.updateUser
-DELETE /coupons/delete/:id             controllers.api.UserController.deleteUser(id)
-
-# Basket
-POST /basket/create                   controllers.api.UserController.createUser
-GET /basket/get/:id                   controllers.api.UserController.getUser(id)
-PUT /basket/update                    controllers.api.UserController.updateUser
-DELETE /basket/delete/:id             controllers.api.UserController.deleteUser(id)
+#
+## UserData
+#POST /user-data/create                   controllers.api.UserController.createUser
+#GET /user-data/get/:id                   controllers.api.UserController.getUser(id)
+#PUT /user-data/update                    controllers.api.UserController.updateUser
+#DELETE /user-data/delete/:id             controllers.api.UserController.deleteUser(id)
+#
+## Order
+#POST /order/create                   controllers.api.UserController.createUser
+#GET /order/get/:id                   controllers.api.UserController.getUser(id)
+#PUT /order/update                    controllers.api.UserController.updateUser
+#DELETE /order/delete/:id             controllers.api.UserController.deleteUser(id)
+#
+#
+## Product
+#POST /product/create                   controllers.api.UserController.createUser
+#GET /product/get/:id                   controllers.api.UserController.getUser(id)
+#PUT /product/update                    controllers.api.UserController.updateUser
+#DELETE /product/delete/:id             controllers.api.UserController.deleteUser(id)
+#
+## Product in stock
+#POST /product-stock/create                   controllers.api.UserController.createUser
+#GET /product-stock/get/:id                   controllers.api.UserController.getUser(id)
+#PUT /product-stock/update                    controllers.api.UserController.updateUser
+#DELETE /product-stock/delete/:id             controllers.api.UserController.deleteUser(id)
+#
+## Product category
+#POST /product-category/create                   controllers.api.UserController.createUser
+#GET /product-category/get/:id                   controllers.api.UserController.getUser(id)
+#PUT /product-category/update                    controllers.api.UserController.updateUser
+#DELETE /product-category/delete/:id             controllers.api.UserController.deleteUser(id)
+#
+## Product subcategory
+#POST /product-subcategory/create                   controllers.api.UserController.createUser
+#GET /product-subcategory/get/:id                   controllers.api.UserController.getUser(id)
+#PUT /product-subcategory/update                    controllers.api.UserController.updateUser
+#DELETE /product-subcategory/delete/:id             controllers.api.UserController.deleteUser(id)
+#
+## Product description
+#POST /product-description/create                   controllers.api.UserController.createUser
+#GET /product-description/get/:id                   controllers.api.UserController.getUser(id)
+#PUT /product-description/update                    controllers.api.UserController.updateUser
+#DELETE /product-description/delete/:id             controllers.api.UserController.deleteUser(id)
+#
+## Payment
+#POST /payment/create                   controllers.api.UserController.createUser
+#GET /payment/get/:id                   controllers.api.UserController.getUser(id)
+#PUT /payment/update                    controllers.api.UserController.updateUser
+#DELETE /payment/delete/:id             controllers.api.UserController.deleteUser(id)
+#
+## Coupons
+#POST /coupons/create                   controllers.api.UserController.createUser
+#GET /coupons/get/:id                   controllers.api.UserController.getUser(id)
+#PUT /coupons/update                    controllers.api.UserController.updateUser
+#DELETE /coupons/delete/:id             controllers.api.UserController.deleteUser(id)
+#
+## Basket
+#POST /basket/create                   controllers.api.UserController.createUser
+#GET /basket/get/:id                   controllers.api.UserController.getUser(id)
+#PUT /basket/update                    controllers.api.UserController.updateUser
+#DELETE /basket/delete/:id             controllers.api.UserController.deleteUser(id)

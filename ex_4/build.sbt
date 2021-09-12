@@ -11,7 +11,7 @@ scalaVersion := "2.12.13"
 
 libraryDependencies ++= Seq(
   ehcache , ws , specs2 % Test , guice,
-  "org.xerial" % "sqlite-jdbc" % "3.30.1",
-  "com.typesafe.play" %% "play-slick" % "4.0.0",
-  "com.typesafe.play" %% "play-slick-evolutions" % "4.0.0")
+  "org.xerial" % "sqlite-jdbc" % "3.36.0.2",
+  "com.typesafe.play" %% "play-slick" % "5.0.0",
+  "com.typesafe.play" %% "play-slick-evolutions" % "5.0.0")
       

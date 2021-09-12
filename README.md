@@ -1,2 +1,1 @@
-# ebiznes_2021
-A repository created for the ebusiness course
+A repository created for the ebusiness course. Store app react-play-scala. 

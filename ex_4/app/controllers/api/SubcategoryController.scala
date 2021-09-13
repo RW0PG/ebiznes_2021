@@ -11,7 +11,6 @@ import scala.concurrent.{ExecutionContext, Future}
 @Singleton
 class SubcategoryController @Inject()(val SubcategoryRepository: SubcategoryRepository, cc: ControllerComponents)(implicit exec: ExecutionContext) extends AbstractController(cc) {
 
-
   def createSubcategory(): Action[JsValue] = Action.async(parse.json) { implicit request =>
     request.body.validate[Subcategory].map {
       subcategory =>

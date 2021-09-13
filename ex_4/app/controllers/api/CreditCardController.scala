@@ -12,7 +12,6 @@ import scala.concurrent.{ExecutionContext, Future}
 class CreditCardController @Inject()(val CreditCardRepository: CreditCardRepository, cc: ControllerComponents)(implicit exec: ExecutionContext) extends AbstractController(cc) {
 
   def createCreditCard(): Action[JsValue] = Action.async(parse.json) { implicit request =>
-
     request.body.validate[CreditCard].map {
       creditCard =>
         CreditCardRepository.create(creditCard.userId, creditCard.cardholderName, creditCard.number, creditCard.expDate, creditCard.cvcCode).map { res =>

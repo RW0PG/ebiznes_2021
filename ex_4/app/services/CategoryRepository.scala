@@ -4,9 +4,6 @@ import models.Category
 import play.api.db.slick.DatabaseConfigProvider
 import slick.jdbc.JdbcProfile
 
-import java.sql.Timestamp
-import java.time.Instant
-import java.util.Date
 import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
 
@@ -30,7 +27,7 @@ class CategoryRepository @Inject()(dbConfigProvider: DatabaseConfigProvider)(imp
     (category.map(c => c.name)
       returning category.map(_.id)
       into { case (name, id) => Category(id, name) }
-      ) += (name)
+      ) += name
   }
 
   def getByIdOption(id: Long): Future[Option[Category]] = db.run {

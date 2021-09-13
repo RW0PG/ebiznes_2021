@@ -6,7 +6,6 @@ import slick.jdbc.JdbcProfile
 
 import java.sql.Timestamp
 import java.time.Instant
-import java.util.Date
 import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
 

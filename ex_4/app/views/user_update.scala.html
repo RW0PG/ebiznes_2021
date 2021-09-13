@@ -8,8 +8,8 @@
 @form(controllers.view.routes.UserController.updateUserHandle) {
     @helper.CSRF.formField
     <input name="id" id="id" value="@user("id").value" type="hidden" />
-    @inputText(user("name"))
     @inputText(user("email"))
+    @inputText(user("nickname"))
     @inputText(user("password"))
 
 

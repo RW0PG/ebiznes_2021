@@ -1,9 +1,10 @@
 package models
 
-import play.api.libs.json.{Json, OFormat}
+import play.api.libs.json._
 
-case class Payment(id: Long, userID: Long, paymentCardID: Long, total: Double)
 
-object Payment {
-  implicit val paymentFormat: OFormat[Payment] = Json.format[Payment]
+case class Payment(id: Long = 0, userId: Long, creditCardId: Long, amount: Int)
+
+object Payment  {
+  implicit val paymentFormat: OFormat[Payment] = Json.using[Json.WithDefaultValues].format[Payment]
 }

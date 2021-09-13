@@ -1,11 +1,11 @@
 * User
-* User Credentials
+* User Data
 * Order
 * Product
 * Product in stock
 * Product category
 * Product subcategory
-* Product description
 * Payment
-* Coupons
-* Basket
+* Payment method
+* Vouchers
+* Cart

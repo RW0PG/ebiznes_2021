@@ -7,8 +7,8 @@
 
 @form(controllers.view.routes.UserController.createUserHandle()) {
     @helper.CSRF.formField
-    @inputText(user("name"))
     @inputText(user("email"))
+    @inputText(user("nickname"))
     @inputText(user("password"))
 
     <div class="buttons">

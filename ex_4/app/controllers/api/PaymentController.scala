@@ -1,43 +1,68 @@
 package controllers.api
 
-import akka.actor.ActorSystem
-import models.MockupMethod
-import play.api.libs.json.Json
+import models.Payment
+import play.api.libs.json.{JsValue, Json}
 import play.api.mvc._
+import services.PaymentRepository
 
 import javax.inject._
-import scala.concurrent.duration._
-import scala.concurrent.{ExecutionContext, Future, Promise}
+import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
-class PaymentController @Inject()(cc: ControllerComponents, actorSystem: ActorSystem)(implicit exec: ExecutionContext) extends AbstractController(cc) {
+class PaymentController @Inject()(val PaymentRepository: PaymentRepository, cc: ControllerComponents)(implicit exec: ExecutionContext) extends AbstractController(cc) {
 
-  def mockupMethodForEx2(delayTime: FiniteDuration, name: String = "mockup_name"): Future[MockupMethod] = {
-    val mockup = MockupMethod("mockup_ID", name)
-    val promise: Promise[MockupMethod] = Promise[MockupMethod]()
-    actorSystem.scheduler.scheduleOnce(delayTime) {
-      promise.success(mockup)
-    } (actorSystem.dispatcher)
-    promise.future
+  def createPayment(): Action[JsValue] = Action.async(parse.json) { implicit request =>
+    request.body.validate[Payment].map {
+      payment =>
+        PaymentRepository.create(payment.userId, payment.creditCardId, payment.amount).map { res =>
+          Ok(Json.toJson(res))
+        }
+    }.getOrElse(Future.successful(BadRequest("wrong data")))
   }
 
-  def createPayment(): Action[AnyContent] = Action.async { implicit request =>
-    println("createPayment, payment: ", request.body)
-    mockupMethodForEx2(30.millisecond, request.body.asJson.get("name").as[String]).map { returned_value => Ok(Json.toJson(returned_value)) }
+
+  def getPaymentById(id: Long): Action[AnyContent] = Action.async {
+    val payment = PaymentRepository.getByIdOption(id)
+    payment.map {
+      case Some(res) => Ok(Json.toJson(res))
+      case None => NotFound("cant find given id")
+    }
   }
 
-  def getPayment(id: String): Action[AnyContent] = Action.async {
-    println("getPayment, getting payment by id: ", id)
-    mockupMethodForEx2(30.millisecond).map {returned_value => Ok(Json.toJson(returned_value))}
+  def listPaymentsByUserId(userId: Long): Action[AnyContent] = Action.async {
+    val payments = PaymentRepository.listByUserId(userId)
+    payments.map { payments =>
+      Ok(Json.toJson(payments))
+    }
   }
 
-  def updatePayment(): Action[AnyContent] = Action.async { implicit request =>
-    println("updatePayment, payment update", request.body)
-    mockupMethodForEx2(30.millisecond, request.body.asJson.get("name").as[String]).map { returned_value => Ok(Json.toJson(returned_value)) }
+  def listPaymentsByCreditCardId(creditCardId: Long): Action[AnyContent] = Action.async {
+    val payments = PaymentRepository.listByCreditCardId(creditCardId)
+    payments.map { payments =>
+      Ok(Json.toJson(payments))
+    }
   }
 
-  def deletePayment(id: String): Action[AnyContent] = Action.async {
-    println("deletePayment, deleting payment with id:", id)
-    mockupMethodForEx2(30.millisecond).map { returned_value => Ok(Json.toJson(returned_value)) }
+  def listPayments(): Action[AnyContent] = Action.async {
+
+    val payments = PaymentRepository.list()
+    payments.map { payments =>
+      Ok(Json.toJson(payments))
+    }
+  }
+
+  def updatePayment(): Action[JsValue] = Action.async(parse.json) { request =>
+    request.body.validate[Payment].map {
+      payment =>
+        PaymentRepository.update(payment.id, payment).map { res =>
+          Ok(Json.toJson(res))
+        }
+    }.getOrElse(Future.successful(BadRequest("invalid json")))
+  }
+
+  def deletePayment(id: Long): Action[AnyContent] = Action.async {
+    PaymentRepository.delete(id).map { res =>
+      Ok(Json.toJson(res))
+    }
   }
 }

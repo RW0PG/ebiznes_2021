@@ -4,67 +4,65 @@ import models.Payment
 import play.api.db.slick.DatabaseConfigProvider
 import slick.jdbc.JdbcProfile
 
-import javax.inject.Inject
+import java.sql.Timestamp
+import java.time.Instant
+import java.util.Date
+import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
-class PaymentRepository @Inject()(dbConfigProvider: DatabaseConfigProvider, val UserRepository: UserRepository, val PaymentType: PaymentCardRepository)(implicit ec: ExecutionContext) {
-
+class PaymentRepository @Inject()(dbConfigProvider: DatabaseConfigProvider, val userRepository: UserRepository, val creditCardRepository: CreditCardRepository)(implicit ec: ExecutionContext) {
   val dbConfig = dbConfigProvider.get[JdbcProfile]
 
   import dbConfig._
   import profile.api._
 
-  import UserRepository.UserTable
-  import PaymentType.PaymentCardTable
-
-  val user = TableQuery[UserTable]
-  val card = TableQuery[PaymentCardTable]
-
-
   class PaymentTable(tag: Tag) extends Table[Payment](tag, "payment") {
 
     def id: Rep[Long] = column[Long]("id", O.PrimaryKey, O.AutoInc)
-    def userID = column[Long]("user_id")
-    def userFK = foreignKey("user_fk", userID, user)(_.id)
-    def paymentCardID = column[Long]("card_id")
-    def paymentCardFK = foreignKey("card_id_fk", paymentCardID, card)(_.id)
-    def total: Rep[Double] = column[Double]("amount")
+    def userId = column[Long]("user_id")
+    def user_fk = foreignKey("user_fk", userId, user_)(_.id)
+    def creditCardId = column[Long]("credit_card_id")
+    def creditCard_fk = foreignKey("credit_card_id_fk", creditCardId, creditCard_)(_.id)
+    def amount: Rep[Int] = column[Int]("amount")
 
-
-    def * = (id, userID, paymentCardID, total) <> ((Payment.apply _).tupled, Payment.unapply)
+    def * = (id, userId, creditCardId, amount) <> ((Payment.apply _).tupled, Payment.unapply)
   }
+
+  import creditCardRepository.CreditCardTable
+  import userRepository.UserTable
 
   val payment = TableQuery[PaymentTable]
+  val user_ = TableQuery[UserTable]
+  val creditCard_ = TableQuery[CreditCardTable]
 
-  def create(userID: Long, paymentCardID: Long, total: Double): Future[Payment] = db.run {
-    (payment.map(p => (p.userID, p.paymentCardID, p.total))
+  def create(userId: Long, creditCardId: Long, amount: Int, createdAt: Timestamp = Timestamp.from(Instant.now()), updatedAt: Timestamp = Timestamp.from(Instant.now())): Future[Payment] = db.run {
+    (payment.map(p => (p.userId, p.creditCardId, p.amount))
       returning payment.map(_.id)
-      into { case ((userID, paymentCardID, total), id) => Payment(id, userID, paymentCardID, total) }
-      ) += (userID, paymentCardID, total)
+      into { case ((userId, creditCardId, amount), id) => Payment(id, userId, creditCardId, amount) }
+      ) += (userId, creditCardId, amount)
   }
 
-  def getPaymentByID(id: Long): Future[Option[Payment]] = db.run {
+  def getByIdOption(id: Long): Future[Option[Payment]] = db.run {
     payment.filter(_.id === id).result.headOption
   }
 
-  def listAllPayments(): Future[Seq[Payment]] = db.run {
+  def list(): Future[Seq[Payment]] = db.run {
     payment.result
   }
 
-  def listByUserID(userID: Long): Future[Seq[Payment]] = db.run {
-    payment.filter(_.userID === userID).result
+  def listByUserId(userId: Long): Future[Seq[Payment]] = db.run {
+    payment.filter(_.userId === userId).result
   }
 
-  def listByCreditCardID(cardID: Long): Future[Seq[Payment]] = db.run {
-    payment.filter(_.paymentCardID === cardID ).result
+  def listByCreditCardId(creditCardId: Long): Future[Seq[Payment]] = db.run {
+    payment.filter(_.creditCardId === creditCardId).result
   }
 
-  def update(id: Long, newPayment: Payment): Future[Int] = {
-    val paymentToUpdate: Payment = newPayment.copy(id)
+  def update(id: Long, new_payment: Payment): Future[Int] = {
+    val paymentToUpdate: Payment = new_payment.copy(id)
     db.run(payment.filter(_.id === id).update(paymentToUpdate))
   }
 
   def delete(id: Long): Future[Int] = db.run(payment.filter(_.id === id).delete)
-
 }

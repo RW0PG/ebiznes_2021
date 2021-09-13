@@ -4,92 +4,85 @@ import models.Order
 import play.api.db.slick.DatabaseConfigProvider
 import slick.jdbc.JdbcProfile
 
-import javax.inject.Inject
+import java.sql.Timestamp
+import java.time.Instant
+import java.util.Date
+import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
-class OrderRepository @Inject()(dbConfigProvider: DatabaseConfigProvider, val UserRepository: UserRepository, val CredentialsRepository: UserCredentialsRepository, val PaymentRepository: PaymentRepository, val CouponsRepository: CouponsRepository)(implicit ec: ExecutionContext) {
+class OrderRepository @Inject()(dbConfigProvider: DatabaseConfigProvider, val userRepository: UserRepository, val addressRepository: UserAddressRepository, val paymentRepository: PaymentRepository, val voucherRepository: VoucherRepository)(implicit ec: ExecutionContext) {
   val dbConfig = dbConfigProvider.get[JdbcProfile]
 
   import dbConfig._
   import profile.api._
+  import addressRepository.UserAddressTable
+  import paymentRepository.PaymentTable
+  import userRepository.UserTable
+  import voucherRepository.VoucherTable
 
-  import UserRepository.UserTable
-  import CredentialsRepository.UserCredentialsTable
-  import PaymentRepository.PaymentTable
-  import CouponsRepository.CouponsTable
-
-  val user = TableQuery[UserTable]
-  val address = TableQuery[UserCredentialsTable]
-  val payment = TableQuery[PaymentTable]
-  val voucher = TableQuery[CouponsTable]
+  val user_ = TableQuery[UserTable]
+  val address_ = TableQuery[UserAddressTable]
+  val payment_ = TableQuery[PaymentTable]
+  val voucher_ = TableQuery[VoucherTable]
 
 
-  class OrderTable(tag: Tag) extends Table[Order](tag, "order") {
+  class OrderTable(tag: Tag) extends Table[Order](tag, "order_") {
 
     def id: Rep[Long] = column[Long]("id", O.PrimaryKey, O.AutoInc)
+    def userId = column[Long]("user_id")
+    def user_fk = foreignKey("user_fk", userId, user_)(_.id)
+    def addressId = column[Long]("address_id")
+    def paymentId = column[Long]("payment_id")
+    def payment_fk = foreignKey("payment_id_fk", paymentId, payment_)(_.id)
+    def voucherId = column[Long]("voucher_id", O.Default(0))
+    def voucher_fk = foreignKey("voucher_id_fk", voucherId, voucher_)(_.id)
 
-    def userID = column[Long]("user_id")
-
-    def userFK = foreignKey("user_fk", userID, user)(_.id)
-
-    def userCredentialsID = column[Long]("credentials_id")
-
-    def paymentID = column[Long]("payment_id")
-
-    def paymentFK = foreignKey("payment_id_fk", paymentID, payment)(_.id)
-
-    def couponID = column[Long]("voucher_id", O.Default(0))
-
-    def couponFK = foreignKey("voucher_id_fk", couponID, voucher)(_.id)
-
-    def * = (id, userID, userCredentialsID, paymentID, couponID) <> ((Order.apply _).tupled, Order.unapply)
+    def * = (id, userId, addressId, paymentId, voucherId) <> ((Order.apply _).tupled, Order.unapply)
   }
+
 
   val order = TableQuery[OrderTable]
 
-  def create(userID: Long, credentialsID: Long, paymentID: Long, couponID: Long): Future[Order] = db.run {
-    (order.map(o => (o.userID, o.userCredentialsID, o.paymentID, o.couponID))
+  def create(userId: Long, addressId: Long, paymentId: Long, voucherId: Long): Future[Order] = db.run {
+    (order.map(o => (o.userId, o.addressId, o.paymentId, o.voucherId))
       returning order.map(_.id)
-      into { case ((userID, credentialsID, paymentID, couponID), id) => Order(id, userID, credentialsID, paymentID, couponID) }
-      ) += (userID, credentialsID, paymentID, couponID)
+      into { case ((userId, addressId, paymentId, voucherId), id) => Order(id, userId, addressId, paymentId, voucherId) }
+      ) += (userId, addressId, paymentId, voucherId)
   }
 
-  def getOrdersByID(id: Long): Future[Option[Order]] = db.run {
+  def getByIdOption(id: Long): Future[Option[Order]] = db.run {
     order.filter(_.id === id).result.headOption
   }
 
-  def listByID(ids: Seq[Long]): Future[Seq[Order]] = db.run {
-    order.filter(_.id.inSet(ids)).result
-  }
-
-  def listAllOrders(): Future[Seq[Order]] = db.run {
+  def list(): Future[Seq[Order]] = db.run {
     order.result
   }
 
-  def listByUserID(userID: Long): Future[Seq[Order]] = db.run {
-    order.filter(_.userID === userID).result
+  def listByIds(ids: Seq[Long]): Future[Seq[Order]] = db.run {
+    order.filter(_.id.inSet(ids)).result
   }
 
-  def listByAddressId(userCredentialsID: Long): Future[Seq[Order]] = db.run {
-    order.filter(_.userCredentialsID === userCredentialsID).result
+  def listByUserId(userId: Long): Future[Seq[Order]] = db.run {
+    order.filter(_.userId === userId).result
   }
 
-  def listByPaymentId(paymentID: Long): Future[Seq[Order]] = db.run {
-    order.filter(_.paymentID === paymentID).result
+  def listByAddressId(addressId: Long): Future[Seq[Order]] = db.run {
+    order.filter(_.addressId === addressId).result
   }
 
-  def listByVoucherId(couponID: Long): Future[Seq[Order]] = db.run {
-    order.filter(_.couponID === couponID).result
+  def listByPaymentId(paymentId: Long): Future[Seq[Order]] = db.run {
+    order.filter(_.paymentId === paymentId).result
   }
 
-  def update(id: Long, newOrder: Order): Future[Int] = {
-    val orderToUpdate: Order = newOrder.copy(id)
+  def listByVoucherId(voucherId: Long): Future[Seq[Order]] = db.run {
+    order.filter(_.voucherId === voucherId).result
+  }
+
+  def update(id: Long, new_order: Order): Future[Int] = {
+    val orderToUpdate: Order = new_order.copy(id)
     db.run(order.filter(_.id === id).update(orderToUpdate))
   }
 
   def delete(id: Long): Future[Int] = db.run(order.filter(_.id === id).delete)
-
-
-
 }

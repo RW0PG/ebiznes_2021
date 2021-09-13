@@ -1,43 +1,81 @@
 package controllers.api
 
-import akka.actor.ActorSystem
-import models.MockupMethod
-import play.api.libs.json.Json
+import models.Order
+import play.api.libs.json.{JsValue, Json}
 import play.api.mvc._
+import services.OrderRepository
 
 import javax.inject._
-import scala.concurrent.duration._
-import scala.concurrent.{ExecutionContext, Future, Promise}
+import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
-class OrderController @Inject()(cc: ControllerComponents, actorSystem: ActorSystem)(implicit exec: ExecutionContext) extends AbstractController(cc) {
+class OrderController @Inject()(val OrderRepository: OrderRepository, cc: ControllerComponents)(implicit exec: ExecutionContext) extends AbstractController(cc) {
 
-  def mockupMethodForEx2(delayTime: FiniteDuration, name: String = "mockup_name"): Future[MockupMethod] = {
-    val mockup = MockupMethod("mockup_ID", name)
-    val promise: Promise[MockupMethod] = Promise[MockupMethod]()
-    actorSystem.scheduler.scheduleOnce(delayTime) {
-      promise.success(mockup)
-    } (actorSystem.dispatcher)
-    promise.future
+  def createOrder(): Action[JsValue] = Action.async(parse.json) { implicit request =>
+    request.body.validate[Order].map {
+      order =>
+        OrderRepository.create(order.userId, order.addressId, order.paymentId, order.voucherId).map { res =>
+          Ok(Json.toJson(res))
+        }
+    }.getOrElse(Future.successful(BadRequest("wrong data")))
   }
 
-  def createOrder(): Action[AnyContent] = Action.async { implicit request =>
-    println("createOrder, order: ", request.body)
-    mockupMethodForEx2(30.millisecond, request.body.asJson.get("name").as[String]).map { returned_value => Ok(Json.toJson(returned_value)) }
+
+  def getOrderById(id: Long): Action[AnyContent] = Action.async {
+    val order = OrderRepository.getByIdOption(id)
+    order.map {
+      case Some(res) => Ok(Json.toJson(res))
+      case None => NotFound("cant find given id")
+    }
   }
 
-  def getOrder(id: String): Action[AnyContent] = Action.async {
-    println("getOrder, getting order by id: ", id)
-    mockupMethodForEx2(30.millisecond).map {returned_value => Ok(Json.toJson(returned_value))}
+  def listOrdersByPaymentId(paymentId: Long): Action[AnyContent] = Action.async {
+    val orders = OrderRepository.listByPaymentId(paymentId)
+    orders.map { orders =>
+      Ok(Json.toJson(orders))
+    }
   }
 
-  def updateOrder(): Action[AnyContent] = Action.async { implicit request =>
-    println("updateOrder, updating user order", request.body)
-    mockupMethodForEx2(30.millisecond, request.body.asJson.get("name").as[String]).map { returned_value => Ok(Json.toJson(returned_value)) }
+  def listOrders(): Action[AnyContent] = Action.async {
+    val orders = OrderRepository.list()
+    orders.map { orders =>
+      Ok(Json.toJson(orders))
+    }
   }
 
-  def deleteOrder(id: String): Action[AnyContent] = Action.async {
-    println("deleteOrder, deleting order with id:", id)
-    mockupMethodForEx2(30.millisecond).map { returned_value => Ok(Json.toJson(returned_value)) }
+  def listOrdersByUserId(userId: Long): Action[AnyContent] = Action.async {
+    val orders = OrderRepository.listByUserId(userId)
+    orders.map { orders =>
+      Ok(Json.toJson(orders))
+    }
+  }
+
+  def listOrdersByAddressId(addressId: Long): Action[AnyContent] = Action.async {
+    val orders = OrderRepository.listByAddressId(addressId)
+    orders.map { orders =>
+      Ok(Json.toJson(orders))
+    }
+  }
+
+  def listOrdersByVoucherId(voucherId: Long): Action[AnyContent] = Action.async {
+    val orders = OrderRepository.listByVoucherId(voucherId)
+    orders.map { orders =>
+      Ok(Json.toJson(orders))
+    }
+  }
+
+  def updateOrder(): Action[JsValue] = Action.async(parse.json) { request =>
+    request.body.validate[Order].map {
+      order =>
+        OrderRepository.update(order.id, order).map { res =>
+          Ok(Json.toJson(res))
+        }
+    }.getOrElse(Future.successful(BadRequest("invalid json")))
+  }
+
+  def deleteOrder(id: Long): Action[AnyContent] = Action.async {
+    OrderRepository.delete(id).map { res =>
+      Ok(Json.toJson(res))
+    }
   }
 }

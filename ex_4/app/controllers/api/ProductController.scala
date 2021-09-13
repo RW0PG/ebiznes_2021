@@ -1,43 +1,73 @@
 package controllers.api
 
-import akka.actor.ActorSystem
-import models.MockupMethod
-import play.api.libs.json.Json
+import models.Product
+import play.api.libs.json.{JsValue, Json}
 import play.api.mvc._
+import services.{CategoryRepository, ProductRepository}
 
 import javax.inject._
-import scala.concurrent.duration._
-import scala.concurrent.{ExecutionContext, Future, Promise}
+import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
-class ProductController @Inject()(cc: ControllerComponents, actorSystem: ActorSystem)(implicit exec: ExecutionContext) extends AbstractController(cc) {
+class ProductController @Inject()(val ProductRepository: ProductRepository, val categoryRepo: CategoryRepository, cc: ControllerComponents)(implicit exec: ExecutionContext) extends AbstractController(cc) {
 
-  def mockupMethodForEx2(delayTime: FiniteDuration, name: String = "mockup_name"): Future[MockupMethod] = {
-    val mockup = MockupMethod("mockup_ID", name)
-    val promise: Promise[MockupMethod] = Promise[MockupMethod]()
-    actorSystem.scheduler.scheduleOnce(delayTime) {
-      promise.success(mockup)
-    } (actorSystem.dispatcher)
-    promise.future
+  def createProduct(): Action[JsValue] = Action.async(parse.json) { implicit request =>
+    request.body.validate[Product].map {
+      product =>
+        ProductRepository.create(product.stockId, product.categoryId, product.subcategoryId, product.name, product.imageUrl, product.description).map { res =>
+          Ok(Json.toJson(res))
+        }
+    }.getOrElse(Future.successful(BadRequest("wrong data")))
   }
 
-  def createProduct(): Action[AnyContent] = Action.async { implicit request =>
-    println("createProduct, Product: ", request.body)
-    mockupMethodForEx2(30.millisecond, request.body.asJson.get("name").as[String]).map { returned_value => Ok(Json.toJson(returned_value)) }
+  def getProductById(id: Long): Action[AnyContent] = Action.async {
+    val product = ProductRepository.getByIdOption(id)
+    product.map {
+      case Some(res) => Ok(Json.toJson(res))
+      case None => NotFound("cant find given id")
+    }
   }
 
-  def getProduct(id: String): Action[AnyContent] = Action.async {
-    println("getProduct, getting product by id: ", id)
-    mockupMethodForEx2(30.millisecond).map {returned_value => Ok(Json.toJson(returned_value))}
+  def listProducts(): Action[AnyContent] = Action.async {
+    val products = ProductRepository.list()
+    products.map { products =>
+      Ok(Json.toJson(products))
+    }
   }
 
-  def updateProduct(): Action[AnyContent] = Action.async { implicit request =>
-    println("updateProduct, updating product", request.body)
-    mockupMethodForEx2(30.millisecond, request.body.asJson.get("name").as[String]).map { returned_value => Ok(Json.toJson(returned_value)) }
+  def listProductsByStockId(stockId: Long): Action[AnyContent] = Action.async {
+    val products = ProductRepository.listByStockId(stockId)
+    products.map { products =>
+      Ok(Json.toJson(products))
+    }
   }
 
-  def deleteProduct(id: String): Action[AnyContent] = Action.async {
-    println("deleteProduct, deleting product with id:", id)
-    mockupMethodForEx2(30.millisecond).map { returned_value => Ok(Json.toJson(returned_value)) }
+  def listProductsByCategoryId(categoryId: Long): Action[AnyContent] = Action.async {
+    val products = ProductRepository.listByCategoryId(categoryId)
+    products.map { products =>
+      Ok(Json.toJson(products))
+    }
+  }
+
+  def listProductsBySubcategoryId(subcategoryId: Long): Action[AnyContent] = Action.async {
+    val products = ProductRepository.listBySubcategoryId(subcategoryId)
+    products.map { products =>
+      Ok(Json.toJson(products))
+    }
+  }
+
+  def updateProduct(): Action[JsValue] = Action.async(parse.json) { request =>
+    request.body.validate[Product].map {
+      product =>
+        ProductRepository.update(product.id, product).map { res =>
+          Ok(Json.toJson(res))
+        }
+    }.getOrElse(Future.successful(BadRequest("invalid json")))
+  }
+
+  def deleteProduct(id: Long): Action[AnyContent] = Action.async {
+    ProductRepository.delete(id).map { res =>
+      Ok(Json.toJson(res))
+    }
   }
 }

@@ -4,9 +4,6 @@ import models.{Order, OrderProduct, Product}
 import play.api.db.slick.DatabaseConfigProvider
 import slick.jdbc.JdbcProfile
 
-import java.sql.Timestamp
-import java.time.Instant
-import java.util.Date
 import javax.inject.{Inject, Singleton}
 import scala.concurrent.duration.DurationInt
 import scala.concurrent.{Await, ExecutionContext, Future}

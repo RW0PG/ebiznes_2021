@@ -1,0 +1,68 @@
+@(message: String, style: String = "scala")
+
+@defining(play.core.PlayVersion.current) { version =>
+
+    <section id="top">
+        <div class="wrapper">
+            <h1><a href="https://playframework.com/documentation/@version/Home">@message</a></h1>
+        </div>
+    </section>
+
+    <div id="content" class="wrapper doc">
+
+        <div>Category:</div>
+        <a href="/form/category/create">Add</a>
+        <a href="/form/category/list">List</a>
+        <div style="margin-bottom: 10px"></div>
+
+        <div>Subcategory:</div>
+        <a href="/form/subcategory/create">Add</a>
+        <a href="/form/subcategory/list">List</a>
+        <div style="margin-bottom: 10px"></div>
+
+        <div>Stock:</div>
+        <a href="/form/stock/create">Add</a>
+        <a href="/form/stock/list">List</a>
+        <div style="margin-bottom: 10px"></div>
+
+        <div>Product:</div>
+        <a href="/form/product/create">Add</a>
+        <a href="/form/product/list">List</a>
+        <div style="margin-bottom: 10px"></div>
+
+        <div>CreditCard:</div>
+        <a href="/form/credit-card/create">Add</a>
+        <a href="/form/credit-card/list">List</a>
+        <div style="margin-bottom: 10px"></div>
+
+        <div>OrderProduct:</div>
+        <a href="/form/order-product/create">Add</a>
+        <a href="/form/order-product/list">List</a>
+        <div style="margin-bottom: 10px"></div>
+
+        <div>Order:</div>
+        <a href="/form/order/create">Add</a>
+        <a href="/form/order/list">List</a>
+        <div style="margin-bottom: 10px"></div>
+
+        <div>Payment:</div>
+        <a href="/form/payment/create">Add</a>
+        <a href="/form/payment/list">List</a>
+        <div style="margin-bottom: 10px"></div>
+
+        <div>UserAddress:</div>
+        <a href="/form/user-address/create">Add</a>
+        <a href="/form/user-address/list">List</a>
+        <div style="margin-bottom: 10px"></div>
+
+        <div>User:</div>
+        <a href="/form/user/create">Add</a>
+        <a href="/form/user/list">List</a>
+        <div style="margin-bottom: 10px"></div>
+
+        <div>Voucher:</div>
+        <a href="/form/voucher/create">Add</a>
+        <a href="/form/voucher/list">List</a>
+        <div style="margin-bottom: 10px"></div>
+    </div>
+}

@@ -8,7 +8,8 @@ import {RootStore} from '../../stores/RootStore';
 import {inject, observer} from 'mobx-react';
 
 
-
+export interface LoginProps {
+}
 
 export const Login: FC<{store?: RootStore}> = inject("store")(observer(({store}) => {
 	const history = useHistory();
@@ -19,9 +20,14 @@ export const Login: FC<{store?: RootStore}> = inject("store")(observer(({store})
 		password: string,
 	}, actions: FormikHelpers<any>) => {
 		actions.resetForm();
-		await userStore?.authorize()
-		history.goBack()
-	};
+		try {
+			const res = await userStore?.login(data.email, data.password);
+			console.log(res)
+			history.goBack()
+		} catch (e) {
+			console.log(e)
+		}
+	}
 
 	return (
 		<LoginStyled>

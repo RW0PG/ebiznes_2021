@@ -8,6 +8,7 @@ import {RegisterPage} from '../context/RegisterPage/RegisterPage';
 import {OrderHistoryPage} from '../context/OrderHistoryPage/OrderHistoryPage';
 import {RootStore} from '../stores/RootStore';
 import {inject, observer} from 'mobx-react';
+import Cookies from "js-cookie";
 
 export const StockPage = () => {
 
@@ -25,9 +26,39 @@ export const Routes: FC<{ store?: RootStore }> = inject('store')(observer(({stor
 
 	useEffect(() => {
 		if (!userStore?.user) {
-			history.push('/')
+			const userId = Cookies.get('userId');
+			if (userId) {
+				(async () => {
+					tryFetchUser(userId)
+				})();
+			} else {
+				const url = new URL(window.location.href);
+				const userIdParam = url.searchParams.get("user-id");
+				if (userIdParam) {
+					(async () => {
+						tryFetchUser(userIdParam)
+					})();
+				}
+			}
+
+			history.push('/');
 		}
-	}, [])
+	}, []);
+
+	const tryFetchUser = (userId: string) => {
+		try {
+			userStore?.authorize(parseInt(userId));
+			Cookies.set('userId', userId)
+		} catch (e) {
+			console.log(e);
+		}
+	}
+
+	// useEffect(() => {
+	// 	if (!userStore?.user) {
+	// 		history.push('/')
+	// 	}
+	// }, [])
 
 	return (
 		<Switch>

@@ -13,11 +13,17 @@ export const Register: FC<{store?: RootStore}> = inject("store")(observer(({stor
 
 	const onSubmit = async (data: {
 		email: string,
+		nickname: string,
 		password: string,
 	}, actions: FormikHelpers<any>) => {
 		actions.resetForm();
-		await userStore?.authorize()
-		history.push('/order')
+		try {
+			const res = await userStore?.register(data.email, data.nickname, data.password);
+			console.log(res)
+			history.push('/order');
+		} catch (e) {
+			console.log(e)
+		}
 	};
 
 	return (

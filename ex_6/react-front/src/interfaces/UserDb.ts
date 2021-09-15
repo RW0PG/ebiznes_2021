@@ -1,6 +1,6 @@
 export interface UserDb {
     id: number,
     email: string,
-    nickname: string,
+    nickname?: string,
     password: string,
 }

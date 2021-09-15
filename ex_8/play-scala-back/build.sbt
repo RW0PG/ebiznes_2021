@@ -13,7 +13,7 @@ scalaVersion := "2.12.13"
 
 libraryDependencies ++= Seq(
   ehcache, ws, specs2 % Test, guice,
-  "com.atlassian.jwt" % "jwt-api" % "3.2.1" % "provided",
+//  "com.atlassian.jwt" % "jwt-api" % "3.2.1" % "provided",
   "com.typesafe.play" %% "play-slick" % "5.0.0",
   "com.typesafe.play" %% "play-slick-evolutions" % "5.0.0",
   "org.xerial" % "sqlite-jdbc" % "3.36.0.2",

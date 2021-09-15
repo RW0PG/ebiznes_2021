@@ -2,44 +2,45 @@ FROM ubuntu:18.04
 
 ENV TZ=Europe/Warsaw
 
+ENV JAVA_HOME /usr/lib/jvm/jdk8
+
+ENV PATH $PATH:$JAVA_HOME/bin
+
 RUN apt-get update && apt-get upgrade -y
 
-RUN apt-get install -y vim gnupg2 sudo git wget unzip curl
+RUN apt-get install -y vim gnupg2 sudo git wget unzip curl tree
 
 #java 8
 
-RUN apt-get install -y openjdk-8-jdk 
+RUN apt-get install -y openjdk-8-jdk
 
 # scala 2.12
 
-RUN wget www.scala-lang.org/files/archive/scala-2.12.10.deb
+RUN wget www.scala-lang.org/files/archive/scala-2.12.13.deb
 
-RUN dpkg -i scala-2.12.10.deb
+RUN dpkg -i scala-2.12.13.deb
 
-#sbt 
+#npm
+RUN curl -sL https://deb.nodesource.com/setup_15.x | bash -
+RUN apt-get install -y nodejs
 
-RUN echo "deb https://dl.bintray.com/sbt/debian /" | tee -a /etc/apt/sources.list.d/sbt.list
+#sbt
 
-RUN apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv 2EE0EA64E40A89B84B2DF73499E82A75642AC823
+RUN wget https://scala.jfrog.io/artifactory/debian/sbt-1.5.1.deb
+RUN dpkg -i sbt-1.5.1.deb
+RUN apt-get update
+RUN apt-get install sbt
 
-RUN apt-get update && apt-get install -y sbt 
+SHELL ["/bin/bash", "-c"]
 
-#npm 
-
-RUN curl -sL https://deb.nodesource.com/setup_15.x | bash - 
-RUN apt-get install -y nodejs 
 
 EXPOSE 3000
+EXPOSE 9000
 
-# user 
 
-RUN useradd -ms /bin/bash rw0pg
-RUN adduser rw0pg sudo
+VOLUME ["/home/rw0pg/ebiznes2021"]
+COPY . /home/rw0pg/ebiznes2021
+WORKDIR /home/rw0pg/ebiznes2021
 
-# workdir 
-
-USER rw0pg
-RUN mkdir /home/rw0pg/ebiznes2021
-WORKDIR /home/rw0pg
-VOLUME /home/rw0pg/ebiznes2021
-
+RUN cd /home/rw0pg/ebiznes2021
+CMD ["sbt"]

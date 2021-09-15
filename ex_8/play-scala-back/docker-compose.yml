@@ -1,0 +1,11 @@
+version: '3'
+services:
+  ebiznes:
+    build: .
+    ports:
+      - 9000:9000
+      - 3000:3000
+    volumes:
+      - .:/home/rw0pg/ebiznes2021/
+    working_dir: /home/rw0pg/ebiznes2021/
+    command: bash -c "sbt run"

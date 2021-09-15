@@ -7,7 +7,7 @@ import {CreditCardModal} from '../../components/CreditCard/CreditCard';
 import {RootStore} from '../../stores/RootStore';
 import {inject, observer} from 'mobx-react';
 import {ImageStyled} from '../../components/Cart/CartItem/CartItemStyled';
-import {Col, Container, Row} from 'react-bootstrap';
+import {Button, Col, Container, Row} from 'react-bootstrap';
 import {DialogContentText, Input} from '@material-ui/core';
 import {toJS} from 'mobx';
 import Popup from 'reactjs-popup';
@@ -21,7 +21,7 @@ import {getVoucherByCode} from '../../api/voucher';
 import { createPayment } from '../../api/payment';
 import {createOrder, createOrderProduct} from '../../api/order';
 import {useHistory} from 'react-router';
-import { Button } from 'react-bootstrap';
+
 
 const CreditCardPopupModal: FC = () => (
 
@@ -152,7 +152,7 @@ export const OrderPage: FC<{ store?: RootStore }> = inject('store')(observer(({s
 		});
 	};
 
-	const totalPrice = () => {
+	const summaryProduct = () => {
 		return cartStore?.listProducts().map(product => {
 			return (
 				<Row>
@@ -173,7 +173,7 @@ export const OrderPage: FC<{ store?: RootStore }> = inject('store')(observer(({s
 				const payment = await createPayment(userStore.user.id, selectedCard?.id, total);
 				const order = await createOrder(userStore.user.id, selectedAddress.id, payment.data.id, voucher?.id)
 				await cartStore?.products.forEach(async (product) => {
-					const res = await createOrderProduct(order.data.id, product.id, product.quantity)
+					await createOrderProduct(order.data.id, product.id, product.quantity);
 				})
 				console.log(order)
 				orderStore?.clearOrders()
@@ -216,7 +216,7 @@ export const OrderPage: FC<{ store?: RootStore }> = inject('store')(observer(({s
 							<div className="text-center mb-3">
 								<Typography variant="button">Products</Typography>
 							</div>
-							{totalPrice()}
+							{summaryProduct()}
 						</div>
 					</Col>
 					<Row>

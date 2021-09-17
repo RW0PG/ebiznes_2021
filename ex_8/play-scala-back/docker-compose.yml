@@ -8,4 +8,4 @@ services:
     volumes:
       - .:/home/rw0pg/ebiznes2021/
     working_dir: /home/rw0pg/ebiznes2021/
-    command: bash -c "sbt run"
+    command: bash -c "source sbt run"

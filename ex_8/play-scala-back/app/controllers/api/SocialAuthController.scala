@@ -24,7 +24,7 @@ class SocialAuthController @Inject()(scc: DefaultSilhouetteControllerComponents,
               _ <- authInfoRepository.save(profile.loginInfo, authInfo)
               authenticator <- authenticatorService.create(profile.loginInfo)
               value <- authenticatorService.init(authenticator)
-              result <- authenticatorService.embed(value, Redirect(s"https://amazing-store.azurewebsites.net?user-id=${user.id}"))
+              result <- authenticatorService.embed(value, Redirect("http://localhost:3000"))
             } yield {
               val Token(name, value) = CSRF.getToken.get
               result.withCookies(Cookie(name, value, httpOnly = false), Cookie("userId", user.id.toString, httpOnly = false))
@@ -33,8 +33,10 @@ class SocialAuthController @Inject()(scc: DefaultSilhouetteControllerComponents,
       case e =>
         println(e)
         Future.failed(new ProviderException(s"Cannot authenticate with unexpected social provider $provider"))
-    }).recover {
+    })
+      .recover {
       case e: ProviderException =>
+        println("d")
         Forbidden("Forbidden")
     }
   })

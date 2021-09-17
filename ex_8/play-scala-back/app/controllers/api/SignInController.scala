@@ -42,7 +42,7 @@ class SignInController @Inject()(scc: DefaultSilhouetteControllerComponents, add
       .map(_.discardingCookies(
         DiscardingCookie(name = "csrfToken"),
         DiscardingCookie(name = "PLAY_SESSION"),
-        DiscardingCookie(name = "OAuth2State")
+        DiscardingCookie(name = "OAuth2State"),
       ))
   }
 }

@@ -181,7 +181,11 @@ PUT           /api/voucher/update                                  controllers.a
 DELETE        /api/voucher/delete/:id                              controllers.api.VoucherController.deleteVoucher(id: Long)
 
 # Authentication
-POST        /signUp                                                controllers.api.SignUpController.signUp
-POST        /signIn                                                controllers.api.SignInController.signIn
-POST        /signOut                                               controllers.api.SignInController.signOut
++noscrf
+POST        /api/sign-up                                           controllers.api.SignUpController.signUp
++noscrf
+POST        /api/sign-in                                           controllers.api.SignInController.signIn
++noscrf
+POST        /api/sign-out                                          controllers.api.SignInController.signOut
+
 GET         /authenticate/:provider                                controllers.api.SocialAuthController.authenticate(provider: String)

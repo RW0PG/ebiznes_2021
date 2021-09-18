@@ -24,7 +24,7 @@ class SocialAuthController @Inject()(scc: DefaultSilhouetteControllerComponents,
               _ <- authInfoRepository.save(profile.loginInfo, authInfo)
               authenticator <- authenticatorService.create(profile.loginInfo)
               value <- authenticatorService.init(authenticator)
-              result <- authenticatorService.embed(value, Redirect("http://localhost:3000"))
+              result <- authenticatorService.embed(value, Redirect(s"http://localhost:3000?user-id=${user.id}"))
             } yield {
               val Token(name, value) = CSRF.getToken.get
               result.withCookies(Cookie(name, value, httpOnly = false), Cookie("userId", user.id.toString, httpOnly = false))
@@ -36,7 +36,7 @@ class SocialAuthController @Inject()(scc: DefaultSilhouetteControllerComponents,
     })
       .recover {
       case e: ProviderException =>
-        println("d")
+//        println("d")
         Forbidden("Forbidden")
     }
   })

@@ -32,7 +32,7 @@ export const Cart: FC<{store?: RootStore}> = inject("store")(observer(({store}) 
 	const completePayment = () => {
 		if (!userStore?.user) {
 			history.push('/order')
-			// history.push('/login')
+			history.push('/login')
 		} else {
 			history.push('/order')
 		}

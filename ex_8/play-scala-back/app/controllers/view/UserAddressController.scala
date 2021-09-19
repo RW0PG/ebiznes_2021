@@ -13,6 +13,8 @@ import scala.util.{Failure, Success}
 @Singleton
 class UserAddressController @Inject()(UserRepository: UserRepository, UserAddressRepository: UserAddressRepository, cc: MessagesControllerComponents)(implicit ec: ExecutionContext) extends MessagesAbstractController(cc) {
 
+  val url = "/form/user-address/list"
+
   val userAddressForm: Form[CreateUserAddressForm] = Form {
     mapping(
       "userId" -> longNumber,
@@ -65,7 +67,7 @@ class UserAddressController @Inject()(UserRepository: UserRepository, UserAddres
       },
       userAddress => {
         UserAddressRepository.create(userAddress.userId, userAddress.firstname, userAddress.lastname, userAddress.address, userAddress.zipcode, userAddress.city, userAddress.country).map { _ =>
-          Redirect("/form/user-address/list")
+          Redirect(url)
         }
       }
     )
@@ -92,7 +94,7 @@ class UserAddressController @Inject()(UserRepository: UserRepository, UserAddres
       },
       userAddress => {
         UserAddressRepository.update(userAddress.id, UserAddress(userAddress.id, userAddress.userId, userAddress.firstname, userAddress.lastname, userAddress.address, userAddress.zipcode, userAddress.city, userAddress.country)).map { _ =>
-          Redirect("/form/user-address/list")
+          Redirect(url)
         }
       }
     )
@@ -100,7 +102,7 @@ class UserAddressController @Inject()(UserRepository: UserRepository, UserAddres
 
   def deleteUserAddress(id: Long): Action[AnyContent] = Action {
     UserAddressRepository.delete(id)
-    Redirect("/form/user-address/list")
+    Redirect(url)
   }
 
 }

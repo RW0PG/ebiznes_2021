@@ -14,6 +14,8 @@ import scala.util.{Failure, Success}
 @Singleton
 class OrderController @Inject()(UserRepository: UserRepository, OrderRepository: OrderRepository, VoucherRepository: VoucherRepository, AddressRepository: UserAddressRepository, PaymentRepository: PaymentRepository, cc: MessagesControllerComponents)(implicit ec: ExecutionContext) extends MessagesAbstractController(cc) {
 
+  val url = "/form/order/list"
+
   val orderForm: Form[CreateOrderForm] = Form {
     mapping(
       "userId" -> longNumber,
@@ -72,7 +74,7 @@ class OrderController @Inject()(UserRepository: UserRepository, OrderRepository:
       },
       order => {
         OrderRepository.create(order.userId, order.addressId, order.paymentId, order.voucherId).map { _ =>
-          Redirect("/form/order/list")
+          Redirect(url)
         }
       }
     )
@@ -108,7 +110,7 @@ class OrderController @Inject()(UserRepository: UserRepository, OrderRepository:
       },
       order => {
         OrderRepository.update(order.id, Order(order.id, order.userId, order.paymentId, order.voucherId)).map { _ =>
-          Redirect("/form/order/list")
+          Redirect(url)
         }
       }
     )
@@ -116,7 +118,7 @@ class OrderController @Inject()(UserRepository: UserRepository, OrderRepository:
 
   def deleteOrder(id: Long): Action[AnyContent] = Action {
     OrderRepository.delete(id)
-    Redirect("/form/order/list")
+    Redirect(url)
   }
 }
 

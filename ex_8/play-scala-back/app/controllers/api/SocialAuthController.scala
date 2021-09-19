@@ -36,7 +36,6 @@ class SocialAuthController @Inject()(scc: DefaultSilhouetteControllerComponents,
     })
       .recover {
       case e: ProviderException =>
-//        println("d")
         Forbidden("Forbidden")
     }
   })

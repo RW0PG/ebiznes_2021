@@ -12,6 +12,8 @@ import scala.concurrent.{ExecutionContext, Future}
 @Singleton
 class CategoryController @Inject()(CategoryRepository: CategoryRepository, cc: MessagesControllerComponents)(implicit ec: ExecutionContext) extends MessagesAbstractController(cc) {
 
+  val url = "/form/category/list"
+
   val categoryForm: Form[CreateCategoryForm] = Form {
     mapping(
       "name" -> nonEmptyText,
@@ -34,7 +36,7 @@ class CategoryController @Inject()(CategoryRepository: CategoryRepository, cc: M
       },
       category => {
         CategoryRepository.create(category.name).map { _ =>
-          Redirect("/form/category/list")
+          Redirect(url)
         }
       }
     )
@@ -66,7 +68,7 @@ class CategoryController @Inject()(CategoryRepository: CategoryRepository, cc: M
       },
       category => {
         CategoryRepository.update(category.id, Category(category.id, category.name)).map { _ =>
-          Redirect("/form/category/list")
+          Redirect(url)
         }
       }
     )
@@ -74,7 +76,7 @@ class CategoryController @Inject()(CategoryRepository: CategoryRepository, cc: M
 
   def deleteCategory(id: Long): Action[AnyContent] = Action {
     CategoryRepository.delete(id)
-    Redirect("/form/category/list")
+    Redirect(url)
   }
 }
 

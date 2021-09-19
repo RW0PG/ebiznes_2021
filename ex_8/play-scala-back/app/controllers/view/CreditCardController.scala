@@ -12,6 +12,7 @@ import scala.util.{Failure, Success}
 
 @Singleton
 class CreditCardController @Inject()(UserRepository: UserRepository, CreditCardRepository: CreditCardRepository, cc: MessagesControllerComponents)(implicit ec: ExecutionContext) extends MessagesAbstractController(cc) {
+  val url = "/form/credit-card/list"
 
   val creditCardForm: Form[CreateCreditCardForm] = Form {
     mapping(
@@ -64,7 +65,7 @@ class CreditCardController @Inject()(UserRepository: UserRepository, CreditCardR
       },
       creditCard => {
         CreditCardRepository.create(creditCard.userId, creditCard.cardholderName, creditCard.number, creditCard.expDate, creditCard.cvcCode).map { _ =>
-          Redirect("/form/credit-card/list")
+          Redirect(url)
         }
       }
     )
@@ -87,7 +88,7 @@ class CreditCardController @Inject()(UserRepository: UserRepository, CreditCardR
       },
       creditCard => {
         CreditCardRepository.update(creditCard.id, CreditCard(creditCard.id, creditCard.userId, creditCard.cardholderName, creditCard.number, creditCard.expDate, creditCard.cvcCode)).map { _ =>
-          Redirect("/form/credit-card/list")
+          Redirect(url)
         }
       }
     )
@@ -95,7 +96,7 @@ class CreditCardController @Inject()(UserRepository: UserRepository, CreditCardR
 
   def deleteCreditCard(id: Long): Action[AnyContent] = Action {
     CreditCardRepository.delete(id)
-    Redirect("/form/credit-card/list")
+    Redirect(url)
   }
 }
 

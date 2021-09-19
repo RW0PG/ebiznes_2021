@@ -14,6 +14,7 @@ import scala.util.{Failure, Success}
 @Singleton
 class OrderProductController @Inject()(OrderProductRepository: OrderProductRepository, OrderRepository: OrderRepository, ProductRepository: ProductRepository, cc: MessagesControllerComponents)(implicit ec: ExecutionContext) extends MessagesAbstractController(cc) {
 
+  val url = "/form/order-product/list"
 
   val orderProductForm: Form[CreateOrderProductForm] = Form {
     mapping(
@@ -59,7 +60,7 @@ class OrderProductController @Inject()(OrderProductRepository: OrderProductRepos
       },
       orderProduct => {
         OrderProductRepository.create(orderProduct.orderId, orderProduct.productId, orderProduct.amount).map { _ =>
-          Redirect("/form/order-product/list")
+          Redirect(url)
         }
       }
     )
@@ -93,7 +94,7 @@ class OrderProductController @Inject()(OrderProductRepository: OrderProductRepos
       },
       orderProduct => {
         OrderProductRepository.update(orderProduct.id, OrderProduct(orderProduct.id, orderProduct.orderId, orderProduct.productId, orderProduct.amount)).map { _ =>
-          Redirect("/form/order-product/list")
+          Redirect(url)
         }
       }
     )
@@ -101,7 +102,7 @@ class OrderProductController @Inject()(OrderProductRepository: OrderProductRepos
 
   def deleteOrderProduct(id: Long): Action[AnyContent] = Action {
     OrderProductRepository.delete(id)
-    Redirect("/form/order-product/list")
+    Redirect(url)
   }
 }
 

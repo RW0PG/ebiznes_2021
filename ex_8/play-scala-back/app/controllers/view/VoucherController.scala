@@ -12,6 +12,8 @@ import scala.concurrent.{ExecutionContext, Future}
 @Singleton
 class VoucherController @Inject()(VoucherRepository: VoucherRepository, cc: MessagesControllerComponents)(implicit ec: ExecutionContext) extends MessagesAbstractController(cc) {
 
+  val url = "/form/voucher/list"
+
   val voucherForm: Form[CreateVoucherForm] = Form {
     mapping(
       "code" -> text,
@@ -43,7 +45,7 @@ class VoucherController @Inject()(VoucherRepository: VoucherRepository, cc: Mess
       },
       voucher => {
         VoucherRepository.create(voucher.code, voucher.amount, voucher.usages).map { _ =>
-          Redirect("/form/voucher/list")
+          Redirect(url)
         }
       }
     )
@@ -70,7 +72,7 @@ class VoucherController @Inject()(VoucherRepository: VoucherRepository, cc: Mess
       },
       voucher => {
         VoucherRepository.update(voucher.id, Voucher(voucher.id, voucher.code, voucher.amount, voucher.usages)).map { _ =>
-          Redirect("/form/voucher/list")
+          Redirect(url)
         }
       }
     )
@@ -78,7 +80,7 @@ class VoucherController @Inject()(VoucherRepository: VoucherRepository, cc: Mess
 
   def deleteVoucher(id: Long): Action[AnyContent] = Action {
     VoucherRepository.delete(id)
-    Redirect("/form/voucher/list")
+    Redirect(url)
   }
 }
 

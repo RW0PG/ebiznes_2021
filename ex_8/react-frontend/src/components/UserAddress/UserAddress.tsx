@@ -1,8 +1,7 @@
 import React, {FC} from 'react';
 import CancelIcon from '@material-ui/icons/Cancel';
-import {DialogContentText, Input} from '@material-ui/core';
+import {DialogContentText, Input, Container} from '@material-ui/core';
 import {Field, Form, Formik, FormikHelpers} from 'formik';
-import { Container } from '@material-ui/core';
 import { UserAddressModalStyled } from '../../styles/UserAddressStyled';
 import { Button, Row } from 'react-bootstrap';
 import Box from "@material-ui/core/Box";

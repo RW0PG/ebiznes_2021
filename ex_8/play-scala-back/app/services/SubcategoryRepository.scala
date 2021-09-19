@@ -55,8 +55,8 @@ class SubcategoryRepository @Inject()(dbConfigProvider: DatabaseConfigProvider, 
     subcategory.filter(_.categoryId === categoryId).result
   }
 
-  def update(id: Long, new_subcategory: Subcategory): Future[Int] = {
-    val subcategoryToUpdate: Subcategory = new_subcategory.copy(id)
+  def update(id: Long, newSubcat: Subcategory): Future[Int] = {
+    val subcategoryToUpdate: Subcategory = newSubcat.copy(id)
     db.run(subcategory.filter(_.id === id).update(subcategoryToUpdate))
   }
 

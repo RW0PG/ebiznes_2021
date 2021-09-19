@@ -76,8 +76,8 @@ class OrderRepository @Inject()(dbConfigProvider: DatabaseConfigProvider, val us
     order.filter(_.voucherId === voucherId).result
   }
 
-  def update(id: Long, new_order: Order): Future[Int] = {
-    val orderToUpdate: Order = new_order.copy(id)
+  def update(id: Long, newOrder: Order): Future[Int] = {
+    val orderToUpdate: Order = newOrder.copy(id)
     db.run(order.filter(_.id === id).update(orderToUpdate))
   }
 

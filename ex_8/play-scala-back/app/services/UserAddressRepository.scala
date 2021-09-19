@@ -55,8 +55,8 @@ class UserAddressRepository @Inject()(dbConfigProvider: DatabaseConfigProvider, 
     userAddress.filter(_.userId === userId).result
   }
 
-  def update(id: Long, new_userAddress: UserAddress): Future[Int] = {
-    val userAddressToUpdate: UserAddress = new_userAddress.copy(id)
+  def update(id: Long, newUserAddress: UserAddress): Future[Int] = {
+    val userAddressToUpdate: UserAddress = newUserAddress.copy(id)
     db.run(userAddress.filter(_.id === id).update(userAddressToUpdate))
   }
 

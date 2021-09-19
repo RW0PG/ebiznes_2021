@@ -41,8 +41,8 @@ class StockRepository @Inject()(dbConfigProvider: DatabaseConfigProvider)(implic
     stock.result
   }
 
-  def update(id: Long, new_stock: Stock): Future[Int] = {
-    val stockToUpdate: Stock = new_stock.copy(id)
+  def update(id: Long, newStock: Stock): Future[Int] = {
+    val stockToUpdate: Stock = newStock.copy(id)
     db.run(stock.filter(_.id === id).update(stockToUpdate))
   }
 

@@ -7,7 +7,7 @@ import {CreditCardModal} from '../../components/CreditCard/CreditCard';
 import {RootStore} from '../../stores/RootStore';
 import {inject, observer} from 'mobx-react';
 import {ImageStyled} from '../../styles/ItemInCardStyled';
-import {Col, Container, Row} from 'react-bootstrap';
+import {Col, Container, Row, Button} from 'react-bootstrap';
 import {DialogContentText, Input} from '@material-ui/core';
 import {toJS} from 'mobx';
 import Popup from 'reactjs-popup';
@@ -21,7 +21,6 @@ import {getVoucherByCode} from '../../api/voucherService';
 import { createPayment } from '../../api/paymentService';
 import {createOrder, createOrderProduct} from '../../api/orderService';
 import {useHistory} from 'react-router';
-import { Button } from 'react-bootstrap';
 
 const CreditCardPopupModal: FC = () => (
 
@@ -114,9 +113,9 @@ export const OrderPage: FC<{ store?: RootStore }> = inject('store')(observer(({s
 
 	useEffect(() => {
 		(async () => {
-			let totalPrice = 0;
-			cartStore?.listProducts().forEach(product => totalPrice += product.price * product.quantity);
-			setTotal(totalPrice)
+			let price = 0;
+			cartStore?.listProducts().forEach(product => price += product.price * product.quantity);
+			setTotal(price)
 		})();
 	}, [cartStore?.products]);
 

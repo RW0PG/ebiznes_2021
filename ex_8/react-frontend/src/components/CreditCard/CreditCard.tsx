@@ -1,15 +1,13 @@
 import React, {FC} from 'react';
 import CancelIcon from '@material-ui/icons/Cancel';
-import {Button} from "react-bootstrap";
-import {DialogContentText, Input} from '@material-ui/core';
+import {DialogContentText, Input, Container} from '@material-ui/core';
 import {Field, Form, Formik, FormikHelpers} from 'formik';
 import Box from "@material-ui/core/Box";
 import {RootStore} from '../../stores/RootStore';
-import { Row } from 'react-bootstrap';
+import {Button, Row} from 'react-bootstrap';
 import {inject, observer} from 'mobx-react';
 import {addCreditCard} from '../../api/creditCardService';
-import { CreditCardModalStyled } from '../../styles/CreditCardStyled';
-import { Container } from '@material-ui/core';
+import {CreditCardModalStyled } from '../../styles/CreditCardStyled';
 
 
 interface CreditCardModalProps {
